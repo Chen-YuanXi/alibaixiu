@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <title>Sign in &laquo; Admin</title>
+    <link rel="stylesheet" href="../assets/vendors/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+
+<body>
+    <script src="../assets/vendors/nprogress/nprogress.js"></script>
+    <div class="login">
+        <div class="login-wrap">
+            <img class="avatar" src="../assets/img/default.png">
+            <!-- 有错误信息时展示 -->
+            <div class="alert alert-danger" style="display:none">
+                <strong>错误！</strong> <span id="msg">用户名或密码错误！</span>
+            </div>
+            <div class="form-group">
+                <label for="email" class="sr-only">邮箱</label>
+                <input id="email" type="email" class="form-control" placeholder="邮箱" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password" class="sr-only">密码</label>
+                <input id="password" type="password" class="form-control" placeholder="密码">
+            </div>
+            <button class="btn btn-primary btn-block" id="loginBtn">登 录</button>
+        </div>
+    </div>
+    <!-- 引入jQuery文件 -->
+    <script src="../assets/vendors/jquery/jquery.js"></script>
+    <script>
+        //选择登陆按钮 添加点击事件
+        $('#loginBtn').on('click', function() {
+            var email = $('#email').val().trim().replace(/\s/g, '');
+            var password = $('#password').val().trim().replace(/\s/g, '');
+
+            //判断邮箱密码格式
+            var regEmail = /\w+[@]\w+[.]\w+/;
+            if (!regEmail.test(email)) {
+                $('.alert').fadeIn(1000).delay(1500).fadeOut(1000);
+                $('#msg').text('邮箱地址不合法，请重新输入');
+                return;
+            };
+
+            var regpwd = /\w{4,16}/;
+            if (!regpwd.test(password)) {
+                $('.alert').fadeIn(1000).delay(1500).fadeOut(1000);
+                $('#msg').text('密码地址不合法，请重新输入');
+                return;
+            };
+            //向服务端发送请求 验证用户
+            $.ajax({
+                type: 'POST',
+                url: '/login',
+                data: {
+                    email: email,
+                    password: password,
+                },
+                success: function(response) {
+                    // console.log(response);
+                    location.href = "index.html";
+                },
+                error: function() {
+                    $('.alert').fadeIn(1000).delay(1500).fadeOut(1000);
+                    $('#msg').text('邮箱或密码输入错误，请重新输入');
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
